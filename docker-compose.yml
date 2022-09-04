@@ -43,6 +43,7 @@ services:
       - "${GRAFANA_PORT}:3000"
     volumes:
       - ./grafana_data:/var/lib/grafana
+      - ./grafana_data/provisioning/:/etc/grafana/provisioning/
     networks:
       - backend
       - frontend
