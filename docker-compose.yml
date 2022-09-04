@@ -1,17 +1,13 @@
 version: "3.7"
 
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
-    
 services:
   prometheus:
     image: "prom/prometheus"
+    container_name: prometheus
     ports:
       - "${PROMET_PORT}:9090"
     volumes:
       - ./prometheus/:/etc/prometheus/
-      - prometheus_data:/prometheus
     restart: always
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -25,6 +21,7 @@ services:
                
   alertmanager:
     image: prom/alertmanager
+    container_name: alertmanager
     ports:
       - "${ALERT_MANAGER_PORT}:9093"
     volumes:
@@ -38,13 +35,14 @@ services:
 
   grafana:
     image: grafana/grafana
+    container_name: grafana
     user: "472"
     depends_on:
       - prometheus
     ports:
       - "${GRAFANA_PORT}:3000"
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana:/var/lib/grafana
     networks:
       - backend
       - frontend
@@ -52,6 +50,7 @@ services:
         
   node-exporter:
     image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
