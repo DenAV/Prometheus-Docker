@@ -60,8 +60,9 @@ groups:
         description: "The Prometheus notification queue has not been empty for 10 minutes\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: PrometheusAllTargetsMissing
-      expr: sum by (job) (up) == 0
-      for: 0m
+      #expr: sum by (job) (up) == 0
+      expr: (count(sum by (job) (up)) - count(sum by (job) (up) == 0)) == 0
+      for: 1m
       labels:
         severity: critical
       annotations:
